@@ -32,8 +32,7 @@ library(SingleCellExperiment)
 library(iMUBAC)
 ```
 1. Data
--  For demonstration, previously published CyTOF datasets from Krieg et al. are included in the package.
--  Pre-treatment datasets stained with the Panel 3 (myeloid cell panel) from two different batches are included.
+-  For demonstration, previously published CyTOF datasets from Krieg et al. (Pre-treatment datasets stained with the Panel 3, a myeloid-specific panel, from two different batches) are included.
 ``` r
 # Sample metadata
 md <- data.table::fread(system.file("Metadata.csv", package="iMUBAC"))
@@ -60,7 +59,8 @@ colData(sce) <- colData(sce)[c("file_name","panel","batch","donor_id","group","t
 saveRDS(sce, "CyTOF_SCE_Merged_Panel3.rds")
 ```
 2. Batch-correction
--  Features can be calculated as follows. Note: This computation is time-consuming and resource-intensive. Computation can be resumed if temporary files are stored in the temporary directory provided.
+-  Here, only control samples (in this case, "HD") are used for batch-correction. However, this is the users' call.
+-  The harmonization step takes some time, depending on the number of batches and cells per batch to be integrated.
 
 ``` r
 # Load the preprocessed data
@@ -189,10 +189,10 @@ sce <- iMUBAC::clusterPropagation(
   seed=12345
 )
 ```
-5. Cell-type identification through manual annotation
+5. Manual cell-type identification
 -  Users can provide cell-type annotations for each cluster. The data.frame should contain four columns: "cluster_id", "celltype", "celltype_detailed", and "order". 
 -  The "celltype" and "celltype_detailed" columns can be identical but may be useful to provide different layers of annotation (e.g., "CD4 T" and "CD4 TEMRA").
--  The "order" column will be used to define the order of factor levels for cell types.
+-  The "order" column will be used to define the order of factor levels for cell types. Expected to be filled with integers.
 ``` r
 # Annotation
 df_celltype <- readxl::read_excel("CyTOF_ClusterCellTypes_Panel3.xlsx")
