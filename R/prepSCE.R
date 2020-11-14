@@ -128,10 +128,11 @@ prepSCE <- function(
       })
     }else if(identical(type, "Flow")){
       cat("-Logicle transformation...\n", sep="")
+      tmax <- flowCore::fsApply(fs, function(ff){max(ff@exprs)})
       fs <- flowCore::fsApply(fs, function(ff){
         trans <- flowCore::transformList(
           from=setdiff(chs, chs_ex),
-          tfun=flowCore::logicleTransform(w=0.5, t=max(ff@exprs), m=4.5, a=0)
+          tfun=flowCore::logicleTransform(w=0.5, t=tmax, m=4.5, a=0)
         )
         #trans <- flowCore::estimateLogicle(ff, channels=setdiff(chs, chs_ex), t=max(ff@exprs))
         ff <- flowCore::transform(ff, trans)
