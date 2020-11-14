@@ -128,7 +128,7 @@ prepSCE <- function(
       })
     }else if(identical(type, "Flow")){
       cat("-Logicle transformation...\n", sep="")
-      tmax <- flowCore::fsApply(fs, function(ff){max(ff@exprs)})
+      tmax <- max(flowCore::fsApply(fs, function(ff){max(ff@exprs)}))
       fs <- flowCore::fsApply(fs, function(ff){
         trans <- flowCore::transformList(
           from=setdiff(chs, chs_ex),
