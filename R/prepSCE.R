@@ -129,11 +129,11 @@ prepSCE <- function(
     }else if(identical(type, "Flow")){
       cat("-Logicle transformation...\n", sep="")
       fs <- flowCore::fsApply(fs, function(ff){
-        #trans <- flowCore::transformList(
-        #  from=setdiff(chs, chs_ex),
-        #  tfun=flowCore::logicleTransform(w=0.5, t=262144, m=4.5, a=0)
-        #)
-        trans <- flowCore::estimateLogicle(ff, channels=setdiff(chs, chs_ex), t=max(ff@exprs))
+        trans <- flowCore::transformList(
+          from=setdiff(chs, chs_ex),
+          tfun=flowCore::logicleTransform(w=0.5, t=max(ff@exprs), m=4.5, a=0)
+        )
+        #trans <- flowCore::estimateLogicle(ff, channels=setdiff(chs, chs_ex), t=max(ff@exprs))
         ff <- flowCore::transform(ff, trans)
         return(ff)
       })
