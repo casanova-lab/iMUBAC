@@ -4,15 +4,7 @@
 \alias{plotDR}
 \title{Plot reduced dimensions}
 \usage{
-plotDR(
-  sce,
-  dimred = "UMAP",
-  colour_by = "condition",
-  text_by = NULL,
-  point_size = 0.5,
-  alpha = 0.75,
-  ...
-)
+plotDR(sce, dimred = "UMAP", colour_by = "condition", text_by = NULL, ...)
 }
 \arguments{
 \item{sce}{A \code{\link[SingleCellExperiment]{SingleCellExperiment}} object.}
@@ -25,10 +17,6 @@ Specifies the color coding. If factor, a discrete color scale will be used. Othe
 
 \item{text_by}{A character string corresponding to a \code{colData(sce)} column.
 Specifies the text coding.}
-
-\item{point_size}{Numeric. Specifies the size of the dots.}
-
-\item{alpha}{Numeric. Specifies the transparency of the dots.}
 
 \item{...}{Additional arguments passed to \code{plotReducedDim} in \pkg{scater}.}
 }

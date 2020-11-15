@@ -13,8 +13,6 @@
 #'   Specifies the color coding. If factor, a discrete color scale will be used. Otherwise, a cividis color scale will be applied by default.
 #' @param text_by A character string corresponding to a \code{colData(sce)} column.
 #'   Specifies the text coding.
-#' @param point_size Numeric. Specifies the size of the dots.
-#' @param alpha Numeric. Specifies the transparency of the dots.
 #' @param ... Additional arguments passed to \code{plotReducedDim} in \pkg{scater}.
 #'
 #' @return A \code{ggplot} object.
@@ -26,8 +24,6 @@ plotDR <- function(
   dimred="UMAP",
   colour_by="condition",
   text_by=NULL,
-  point_size=0.5,
-  alpha=0.75,
   ...
 ){
   p <- scater::plotReducedDim(
@@ -39,7 +35,7 @@ plotDR <- function(
   )
   p <- ggedit::remove_geom(p, geom="point")
   p$layers <- c(
-    ggrastr::geom_point_rast(aes(colour=colour_by), shape=19, size=point_size, alpha=alpha),
+    ggrastr::geom_point_rast(aes(colour=colour_by), shape="."),
     p$layers
   )
   if(is.factor(sce[[colour_by]])){
@@ -51,7 +47,7 @@ plotDR <- function(
     }
     p <- p +
       scale_colour_manual(name=colour_by, values=cols) +
-      guides(colour=guide_legend(override.aes=list(size=3, alpha=1)))
+      guides(colour=guide_legend(override.aes=list(shape=19, size=3, alpha=1)))
   }else{
     p <- p +
       viridis::scale_color_viridis(option="cividis")
