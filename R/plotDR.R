@@ -13,6 +13,8 @@
 #'   Specifies the color coding. If factor, a discrete color scale will be used. Otherwise, a cividis color scale will be applied by default.
 #' @param text_by A character string corresponding to a \code{colData(sce)} column.
 #'   Specifies the text coding.
+#' @param point_shape,point_size,point_alpha Parameters for the plot. Note: setting the shape to "." allows users to nicely plot a large number of dots.
+#' @param rasterize Logical. Whether the plot needs to be rasterized using \pkg{ggrastr}. Note: facetting may cause the Cairo device to fail.
 #' @param ... Additional arguments passed to \code{plotReducedDim} in \pkg{scater}.
 #'
 #' @return A \code{ggplot} object.
@@ -24,6 +26,10 @@ plotDR <- function(
   dimred="UMAP",
   colour_by="condition",
   text_by=NULL,
+  point_shape=19,
+  point_size=0.5,
+  point_alpha=1,
+  rasterize=T,
   ...
 ){
   p <- scater::plotReducedDim(
@@ -33,11 +39,19 @@ plotDR <- function(
     text_by=text_by,
     ...
   )
-  p <- ggedit::remove_geom(p, geom="point")
-  p$layers <- c(
-    ggrastr::geom_point_rast(aes(colour=colour_by), shape="."),
-    p$layers
-  )
+  if(rasterize){
+    p <- ggedit::remove_geom(p, geom="point")
+    p$layers <- c(
+      ggrastr::geom_point_rast(
+        aes(colour=colour_by),
+        shape=point_shape,
+        size=point_size,
+        alpha=point_alpha,
+        raster.dpi=300
+      ),
+      p$layers
+    )
+  }
   if(is.factor(sce[[colour_by]])){
     nk <- nlevels(sce[[colour_by]])
     if(nk > length(myCols)){
@@ -47,7 +61,7 @@ plotDR <- function(
     }
     p <- p +
       scale_colour_manual(name=colour_by, values=cols) +
-      guides(colour=guide_legend(override.aes=list(shape=19, size=3, alpha=1)))
+      guides(colour=guide_legend(nrow=1, override.aes=list(shape=19, size=3, alpha=1)))
   }else{
     p <- p +
       viridis::scale_color_viridis(option="cividis")
