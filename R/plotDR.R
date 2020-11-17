@@ -51,6 +51,17 @@ plotDR <- function(
       ),
       p$layers
     )
+  }else{
+    p <- ggedit::remove_geom(p, geom="point")
+    p$layers <- c(
+      geom_point(
+        aes(colour=colour_by),
+        shape=point_shape,
+        size=point_size,
+        alpha=point_alpha
+      ),
+      p$layers
+    )
   }
   if(is.factor(sce[[colour_by]])){
     nk <- nlevels(sce[[colour_by]])
