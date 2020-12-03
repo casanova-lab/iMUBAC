@@ -295,5 +295,5 @@ dt_da_qlf <- edgeR::glmQLFTest(
 
 Reference
 ------------------------
-Ogishi, M et al. (2020) "Multi-batch cytometry data integration toward unbiased and streamlined immunophenotyping." *The Journal of Immunology*.  https://www.jimmunol.org/content/early/2020/11/20/jimmunol.2000854  
+Ogishi, M et al. (2020) "Multibatch Cytometry Data Integration for Optimal Immunophenotyping." *The Journal of Immunology*.  https://www.jimmunol.org/content/early/2020/11/20/jimmunol.2000854  
 Krieg, C et al. (2018) "High-dimensional Single-Cell Analysis Predicts Response to anti-PD-1 Immunotherapy." *Nature Medicine*. https://pubmed.ncbi.nlm.nih.gov/29309059/
