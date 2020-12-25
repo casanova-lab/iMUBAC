@@ -7,6 +7,7 @@
 #' is used to internally replace the \code{geom_point} layer.
 #'
 #' @param sce A \code{\link[SingleCellExperiment]{SingleCellExperiment}} object.
+#' @param sce_bg An optional \code{\link[SingleCellExperiment]{SingleCellExperiment}} object for background data. If provided, the data would be depicted in a light grey in a layer behind the main plot.
 #' @param dimred A character string specifying which dimension reduction to use.
 #'   Should be one of \code{reducedDimNames(sce)}.
 #' @param colour_by A character string corresponding to a \code{colData(sce)} column.
@@ -23,6 +24,7 @@
 
 plotDR <- function(
   sce,
+  sce_bg=NULL,
   dimred="UMAP",
   colour_by="condition",
   text_by=NULL,
@@ -62,6 +64,36 @@ plotDR <- function(
       ),
       p$layers
     )
+  }
+  if(!is.null(sce_bg)){
+    p_bg <- scater::plotReducedDim(
+      sce_bg,
+      dimred=dimred
+    )
+    if(rasterize){
+      p$layers <- c(
+        ggrastr::geom_point_rast(
+          data=p_bg$"data",
+          colour="grey90",
+          shape=point_shape,
+          size=point_size,
+          alpha=point_alpha,
+          raster.dpi=300
+        ),
+        p$layers
+      )
+    }else{
+      p$layers <- c(
+        geom_point(
+          data=p_bg$"data",
+          colour="grey90",
+          shape=point_shape,
+          size=point_size,
+          alpha=point_alpha
+        ),
+        p$layers
+      )
+    }
   }
   if(is.factor(sce[[colour_by]])){
     nk <- nlevels(sce[[colour_by]])

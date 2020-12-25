@@ -6,6 +6,7 @@
 \usage{
 plotDR(
   sce,
+  sce_bg = NULL,
   dimred = "UMAP",
   colour_by = "condition",
   text_by = NULL,
@@ -18,6 +19,8 @@ plotDR(
 }
 \arguments{
 \item{sce}{A \code{\link[SingleCellExperiment]{SingleCellExperiment}} object.}
+
+\item{sce_bg}{An optional \code{\link[SingleCellExperiment]{SingleCellExperiment}} object for background data. If provided, the data would be depicted in a light grey in a layer behind the main plot.}
 
 \item{dimred}{A character string specifying which dimension reduction to use.
 Should be one of \code{reducedDimNames(sce)}.}
