@@ -14,8 +14,10 @@
 #'   Specifies the color coding. If factor, a discrete color scale will be used. Otherwise, a cividis color scale will be applied by default.
 #' @param text_by A character string corresponding to a \code{colData(sce)} column.
 #'   Specifies the text coding.
+#' @param facet_by A character string corresponding to a \code{colData(sce)} column.
+#'   Specifies the faceting. Note: Users must provide a separate faceting command such as \code{lemon::facet_rep_grid}. Faceting does not occur internally.
 #' @param point_shape,point_size,point_alpha Parameters for the plot. Note: setting the shape to "." allows users to nicely plot a large number of dots.
-#' @param rasterize Logical. Whether the plot needs to be rasterized using \pkg{ggrastr}. Note: facetting may cause the Cairo device to fail.
+#' @param rasterize Logical. Whether the plot needs to be rasterized using \pkg{ggrastr}.
 #' @param ... Additional arguments passed to \code{plotReducedDim} in \pkg{scater}.
 #'
 #' @return A \code{ggplot} object.
@@ -28,6 +30,7 @@ plotDR <- function(
   dimred="UMAP",
   colour_by="condition",
   text_by=NULL,
+  facet_by=NULL,
   point_shape=19,
   point_size=0.5,
   point_alpha=1,
@@ -39,8 +42,18 @@ plotDR <- function(
     dimred=dimred,
     colour_by=colour_by,
     text_by=text_by,
+    other_fields=list(colour_by,text_by,facet_by),
     ...
   )
+  if(!is.null(sce_bg)){
+    p_bg <- scater::plotReducedDim(
+      sce_bg,
+      dimred=dimred,
+      other_fields=list(colour_by,text_by,facet_by),
+      ...
+    )
+  }
+
   if(rasterize){
     p <- ggedit::remove_geom(p, geom="point")
     p$layers <- c(
@@ -53,24 +66,7 @@ plotDR <- function(
       ),
       p$layers
     )
-  }else{
-    p <- ggedit::remove_geom(p, geom="point")
-    p$layers <- c(
-      geom_point(
-        aes(colour=colour_by),
-        shape=point_shape,
-        size=point_size,
-        alpha=point_alpha
-      ),
-      p$layers
-    )
-  }
-  if(!is.null(sce_bg)){
-    p_bg <- scater::plotReducedDim(
-      sce_bg,
-      dimred=dimred
-    )
-    if(rasterize){
+    if(!is.null(sce_bg)){
       p$layers <- c(
         ggrastr::geom_point_rast(
           data=p_bg$"data",
@@ -82,7 +78,19 @@ plotDR <- function(
         ),
         p$layers
       )
-    }else{
+    }
+  }else{
+    p <- ggedit::remove_geom(p, geom="point")
+    p$layers <- c(
+      geom_point(
+        aes(colour=colour_by),
+        shape=point_shape,
+        size=point_size,
+        alpha=point_alpha
+      ),
+      p$layers
+    )
+    if(!is.null(sce_bg)){
       p$layers <- c(
         geom_point(
           data=p_bg$"data",
@@ -95,6 +103,7 @@ plotDR <- function(
       )
     }
   }
+
   if(is.factor(sce[[colour_by]])){
     nk <- nlevels(sce[[colour_by]])
     if(nk > length(myCols)){
@@ -109,9 +118,16 @@ plotDR <- function(
     p <- p +
       viridis::scale_color_viridis(option="cividis")
   }
+
   p <- p +
     ggpubr::theme_pubr(14) +
-    theme(aspect.ratio=1) +
+    theme(aspect.ratio=1,
+          legend.spacing.x=unit(0.15, 'cm'),
+          panel.grid.major=element_blank(),
+          panel.grid.minor=element_blank(),
+          strip.background=element_blank(),
+          strip.text=element_text(size=14)) +
     ggpubr::rremove("legend.title")
+
   return(p)
 }

@@ -10,6 +10,7 @@ plotDR(
   dimred = "UMAP",
   colour_by = "condition",
   text_by = NULL,
+  facet_by = NULL,
   point_shape = 19,
   point_size = 0.5,
   point_alpha = 1,
@@ -31,9 +32,12 @@ Specifies the color coding. If factor, a discrete color scale will be used. Othe
 \item{text_by}{A character string corresponding to a \code{colData(sce)} column.
 Specifies the text coding.}
 
+\item{facet_by}{A character string corresponding to a \code{colData(sce)} column.
+Specifies the faceting. Note: Users must provide a separate faceting command such as \code{lemon::facet_rep_grid}. Faceting does not occur internally.}
+
 \item{point_shape, point_size, point_alpha}{Parameters for the plot. Note: setting the shape to "." allows users to nicely plot a large number of dots.}
 
-\item{rasterize}{Logical. Whether the plot needs to be rasterized using \pkg{ggrastr}. Note: facetting may cause the Cairo device to fail.}
+\item{rasterize}{Logical. Whether the plot needs to be rasterized using \pkg{ggrastr}.}
 
 \item{...}{Additional arguments passed to \code{plotReducedDim} in \pkg{scater}.}
 }
