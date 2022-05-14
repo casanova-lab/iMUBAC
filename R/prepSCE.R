@@ -177,15 +177,16 @@ prepSCE <- function(
   if(!all(rn_union %in% rn_int)) message("Markers missing in some of the batches are discarded.")
 
   # Merge SCE objects from multiple batches
-  sce <- suppressMessages(scMerge::sce_cbind(
-    sce_list,
-    method="intersect",
-    cut_off_batch=0,
-    cut_off_overall=0,
-    exprs="exprs",
-    colData_names=c("full_path","batch"),
-    batch_names=batch_list
-  ))
+  sce <- Reduce("rbind", sce_list)
+  # sce <- suppressMessages(sce_cbind(
+  #   sce_list,
+  #   method="intersect",
+  #   cut_off_batch=0,
+  #   cut_off_overall=0,
+  #   exprs="exprs",
+  #   colData_names=c("full_path","batch"),
+  #   batch_names=batch_list
+  # ))
   sce$"batch" <- factor(sce$"batch", levels=c(batch_list))
 
   # Integrate metadata
