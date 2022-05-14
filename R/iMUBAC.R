@@ -12,7 +12,6 @@
 #' @importFrom cydar poolCells dnaGate outlierGate
 #' @importFrom data.table := data.table as.data.table rbindlist setcolorder
 #' @importFrom dplyr %>% mutate mutate_all transmute filter bind_rows group_by summarize sample_n tally n
-#' @importFrom extraTrees extraTrees
 #' @importFrom flowCore flowFrame colnames colnames<- exprs exprs<- keyword Subset fsApply biexponentialTransform transformList transform estimateLogicle
 #' @importFrom FlowSOM BuildSOM ReadInput
 #' @importFrom ggedit remove_geom
