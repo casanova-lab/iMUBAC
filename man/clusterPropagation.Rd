@@ -29,7 +29,7 @@ Must be the non-batch-corrected one in this case.}
 Specifies the maximum number of unique cells per cluster per batch to be used
 for classifier training.}
 
-\item{numThreads}{Numeric. The number of threads for \code{extraTrees}.}
+\item{numThreads}{Numeric. The number of threads for training classifiers.}
 
 \item{seed}{Numeric. Sets a random seed.}
 }
@@ -40,6 +40,6 @@ A \code{\link{SingleCellExperiment-class}} object.
 \code{clusterPropagation} takes both an original SCE object returned by
 \code{prepSCE} and down-sampled, batch-corrected, and clustered SCE object
 returned by \code{clustering} as inputs.
-This function trains batch-specific classifiers using \pkg{extraTrees},
+This function trains batch-specific classifiers using a specified algorithm,
 and predicts cluster IDs in a batch-wise manner.
 }
