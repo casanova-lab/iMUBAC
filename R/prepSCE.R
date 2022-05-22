@@ -177,7 +177,7 @@ prepSCE <- function(
   if(!all(rn_union %in% rn_int)) message("Markers missing in some of the batches are discarded.")
 
   # Merge SCE objects from multiple batches
-  sce <- Reduce("rbind", sce_list)
+  sce <- Reduce("cbind", sce_list)
   # sce <- suppressMessages(sce_cbind(
   #   sce_list,
   #   method="intersect",
