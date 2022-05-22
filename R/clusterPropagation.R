@@ -5,7 +5,7 @@
 #' \code{clusterPropagation} takes both an original SCE object returned by
 #' \code{prepSCE} and down-sampled, batch-corrected, and clustered SCE object
 #' returned by \code{clustering} as inputs.
-#' This function trains batch-specific classifiers using \pkg{extraTrees},
+#' This function trains batch-specific classifiers using a specified algorithm,
 #' and predicts cluster IDs in a batch-wise manner.
 #'
 #' @param sce A \code{\link[SingleCellExperiment]{SingleCellExperiment}} object.
@@ -19,7 +19,7 @@
 #' @param maxN Numeric.
 #'   Specifies the maximum number of unique cells per cluster per batch to be used
 #'   for classifier training.
-#' @param numThreads Numeric. The number of threads for \code{extraTrees}.
+#' @param numThreads Numeric. The number of threads for training classifiers.
 #' @param seed Numeric. Sets a random seed.
 #'
 #' @return A \code{\link{SingleCellExperiment-class}} object.
@@ -58,13 +58,14 @@ clusterPropagation <- function(
       sampling="up",
       verboseIter=F
     )
-    tunegrid <- expand.grid(.mtry=5:15, .numRandomCuts=1:2)
     mat <- t(assay(sce_down, by_exprs_values))
-    ert <- caret::train(
+    tunegrid <- expand.grid(.mtry=5:15)
+    #tunegrid <- expand.grid(.mtry=5:15, .numRandomCuts=1:2) ## for extraTrees
+    caret.model <- caret::train(
       x=mat,
       y=droplevels(sce_down$"cluster_id"),
       preProcess=c("center","scale"),
-      method="extraTrees",
+      method="rf",
       metric="Kappa",
       tuneGrid=tunegrid,
       trControl=trCtrls,
@@ -74,7 +75,7 @@ clusterPropagation <- function(
     ## Predict cell types
     cat("-Predicting clusters...\n", sep="")
     mat <- t(assay(sce, by_exprs_values))
-    clusterIDs <- predict(ert, newdata=mat)
+    clusterIDs <- predict(caret.model, newdata=mat)
     clusterIDs <- as.numeric(as.character(clusterIDs)) ### remove factor levels
 
     ## Output

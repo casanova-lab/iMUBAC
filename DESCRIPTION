@@ -1,7 +1,7 @@
 Package: iMUBAC
 Type: Package
 Title: Integration of Multi-Batch Cytometry datasets
-Version: 0.1.2
+Version: 0.2.0
 Author: Masato Ogishi
 Maintainer: Masato Ogishi <oogishi-tky@umin.ac.jp>
 Description: High-dimentional cytometry, including spectral flow cytometry and mass cytometry (CyTOF), enables deep immunophenotyping at a single-cell resolution. Analysis of cytometry data from multiple batches of experiments remains to be challenging due to the high-dimentionality and batch effects. We designed iMUBAC (Integration of Multi-Batch Cytometry datasets) to enable a rational and streamlined inter-batch comparisons through i) preprocessing, ii) batch-correction, iii) unsupervised clustering, and iv) batch-specific cell-type identification.
@@ -16,7 +16,6 @@ Imports:
 	cydar,
 	data.table, 
 	dplyr, 
-	extraTrees,
 	flowCore, 
 	FlowSOM, 
 	ggedit, 
