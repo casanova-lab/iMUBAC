@@ -51,6 +51,10 @@ clusterPropagation <- function(
 
     ## Train a classifier
     cat("-Training a classifier...\n", sep="")
+    require(caret)
+    require(doParallel)
+    cl <- makePSOCKcluster(numThreads)
+    registerDoParallel(cl)
     trCtrls <- caret::trainControl(
       method="repeatedcv",
       number=10,
@@ -68,9 +72,9 @@ clusterPropagation <- function(
       method="rf",
       metric="Kappa",
       tuneGrid=tunegrid,
-      trControl=trCtrls,
-      numThreads=numThreads
+      trControl=trCtrls
     )
+    stopCluster(cl)
 
     ## Predict cell types
     cat("-Predicting clusters...\n", sep="")
