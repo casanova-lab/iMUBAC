@@ -43,7 +43,7 @@ Specifies the channel names for DNA dyes. Can also be NULL.}
 \item{channel_LD}{A character string.
 Specifies the channel name for the live/dead exclusion dye. Can also be NULL.}
 
-\item{type}{A string indicating the type of the underlying data. Can be either "CyTOF" or "Flow".}
+\item{type}{A string indicating the type of the underlying data. Can be either "CyTOF" or "Flow". Can also be set NULL to omit cytometry-specific data transformation.}
 }
 \value{
 A \code{\link{SingleCellExperiment-class}} object.

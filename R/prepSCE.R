@@ -33,7 +33,7 @@
 #'   Specifies the channel names for DNA dyes. Can also be NULL.
 #' @param channel_LD A character string.
 #'   Specifies the channel name for the live/dead exclusion dye. Can also be NULL.
-#' @param type A string indicating the type of the underlying data. Can be either "CyTOF" or "Flow".
+#' @param type A string indicating the type of the underlying data. Can be either "CyTOF" or "Flow". Can also be set NULL to omit cytometry-specific data transformation.
 #'
 #' @return A \code{\link{SingleCellExperiment-class}} object.
 #'
@@ -57,7 +57,7 @@ prepSCE <- function(
   }else if(identical(type, "Flow")){
     trans <- "linearize"
   }else{
-    stop("'type' must be either 'CyTOF' or 'Flow'!")
+    trans <- F
   }
   sce_list <- lapply(batch_list, function(b){
     ## Load data
@@ -120,26 +120,28 @@ prepSCE <- function(
     fs <- ncdfFlow::as.flowSet(fs)
 
     ## Transformation
-    if(identical(type, "CyTOF")){
-      cat("-Hyperbolic arcsin transformation...\n", sep="")
-      fs <- flowCore::fsApply(fs, function(ff){
-        flowCore::exprs(ff) <- asinh(flowCore::exprs(ff)/5)
-        return(ff)
-      })
-    }else if(identical(type, "Flow")){
-      cat("-Logicle transformation...\n", sep="")
-      tmax <- max(flowCore::fsApply(fs, function(ff){max(ff@exprs)}))
-      fs <- flowCore::fsApply(fs, function(ff){
-        trans <- flowCore::transformList(
-          from=setdiff(chs, chs_ex),
-          tfun=flowCore::logicleTransform(w=0.5, t=tmax, m=4.5, a=0)
-        )
-        #trans <- flowCore::estimateLogicle(ff, channels=setdiff(chs, chs_ex), t=max(ff@exprs))
-        ff <- flowCore::transform(ff, trans)
-        return(ff)
-      })
-    }else{
-      stop("'type' must be either 'CyTOF' or 'Flow'!")
+    if(!is.null(type)){
+      if(identical(type, "CyTOF")){
+        cat("-Hyperbolic arcsin transformation...\n", sep="")
+        fs <- flowCore::fsApply(fs, function(ff){
+          flowCore::exprs(ff) <- asinh(flowCore::exprs(ff)/5)
+          return(ff)
+        })
+      }else if(identical(type, "Flow")){
+        cat("-Logicle transformation...\n", sep="")
+        tmax <- max(flowCore::fsApply(fs, function(ff){max(ff@exprs)}))
+        fs <- flowCore::fsApply(fs, function(ff){
+          trans <- flowCore::transformList(
+            from=setdiff(chs, chs_ex),
+            tfun=flowCore::logicleTransform(w=0.5, t=tmax, m=4.5, a=0)
+          )
+          #trans <- flowCore::estimateLogicle(ff, channels=setdiff(chs, chs_ex), t=max(ff@exprs))
+          ff <- flowCore::transform(ff, trans)
+          return(ff)
+        })
+      }else{
+        stop("'type' must be either 'CyTOF' or 'Flow'!")
+      }
     }
 
     ## Construct an SCE object
@@ -178,15 +180,6 @@ prepSCE <- function(
 
   # Merge SCE objects from multiple batches
   sce <- Reduce("cbind", sce_list)
-  # sce <- suppressMessages(sce_cbind(
-  #   sce_list,
-  #   method="intersect",
-  #   cut_off_batch=0,
-  #   cut_off_overall=0,
-  #   exprs="exprs",
-  #   colData_names=c("full_path","batch"),
-  #   batch_names=batch_list
-  # ))
   sce$"batch" <- factor(sce$"batch", levels=c(batch_list))
 
   # Integrate metadata
