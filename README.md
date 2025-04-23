@@ -32,7 +32,8 @@ library(SingleCellExperiment)
 library(iMUBAC)
 ```
 1. Data
--  For demonstration, previously published CyTOF datasets from Krieg et al. (Pre-treatment datasets stained with the Panel 3, a myeloid-specific panel, from two different batches) are included.
+-  For demonstration, previously published CyTOF datasets from Krieg et al. (Pre-treatment datasets stained with Panel 3, a myeloid-specific panel, from two different batches) are included.
+-  (Added on 2025/03/25) CyTOF and spectral cytometry data, together with example scripts, are published in [*Mendeley Data*](https://data.mendeley.com/datasets/w4zd3vcmk7/1).
 ``` r
 # Sample metadata
 md <- data.table::fread(system.file("Metadata.csv", package="iMUBAC"))
